@@ -1,7 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 const app: Application = express();
 import cors from "cors";
-import { StatusCodes } from "http-status-codes";
 import cookieParser from "cookie-parser";
 
 // Cors
