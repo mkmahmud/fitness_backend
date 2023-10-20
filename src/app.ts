@@ -2,6 +2,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 const app: Application = express();
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import routes from "./app/routes/index.ts";
 
 // Cors
 app.use(cors());
@@ -14,5 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   res.send("Server is runing");
 });
+
+// User Router
+app.use("/api/v1", routes);
 
 export default app;
