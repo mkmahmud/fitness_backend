@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { userService } from "./user.service";
 import sendResponse from "../../../shared/sendResponse";
 import { StatusCodes } from "http-status-codes";
-import { MyjwtVerify } from "../../../shared/jwt/jtwHandeler";
 import jwt, { Secret } from "jsonwebtoken";
 import config from "../../config/config";
 
@@ -113,7 +112,7 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// Update Singel User
+// Update Password
 const changePassword = async (
   req: Request,
   res: Response,

@@ -5,3 +5,7 @@
 ✅ Auth
 ✅ Update Profile
 ✅ Change Password
+
+# Membership Management:
+
+⏳ Membership
