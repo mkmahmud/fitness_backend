@@ -16,16 +16,6 @@
   "plugins": ["@typescript-eslint", "import", "prettier"],
 
   "rules": {
-    // ...other rules...
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ]
+    "import/extensions": "off"
   }
 }

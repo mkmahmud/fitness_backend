@@ -2,7 +2,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 const app: Application = express();
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import routes from "./app/routes/index.ts";
+import routes from "./app/routes";
 
 // Cors
 app.use(cors());

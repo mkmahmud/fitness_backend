@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { userService } from "./user.service";
-import sendResponse from "../../../shared/sendResponse.ts";
+import sendResponse from "../../../shared/sendResponse";
 import { StatusCodes } from "http-status-codes";
+import { MyjwtVerify } from "../../../shared/jwt/jtwHandeler";
 import jwt, { Secret } from "jsonwebtoken";
-import config from "../../config/config.ts";
+import config from "../../config/config";
 
 // Create User
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -21,6 +22,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     message: "User Created Successfully",
   });
 };
+
 // Log In User
 const logIn = async (req: Request, res: Response, next: NextFunction) => {
   const userData = req.body;
@@ -58,7 +60,12 @@ const user = async (req: Request, res: Response, next: NextFunction) => {
           message: "User Retrieved Successfully",
         });
       } else {
-        console.log("ID doesn't Matched");
+        sendResponse(res, {
+          statusCode: StatusCodes.UNAUTHORIZED,
+          success: false,
+          data: null,
+          message: "Unauthorized",
+        });
       }
     } catch (err) {
       console.log(err);
@@ -66,8 +73,94 @@ const user = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// Update Singel User
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+  const { id: UpdatedId } = req.query as { id: string };
+  const UpdatedData = req.body;
+  // User Tocken Data
+  const userData = req.headers.cookie;
+  const tocken = userData?.split("=")[1];
+  if (tocken) {
+    try {
+      const decoded = jwt.verify(tocken, config.JWT_SECRET_KEY as Secret) as {
+        id: string;
+      };
+      // Check Valid User
+      if (UpdatedId === decoded.id) {
+        // Update User
+        const result = await userService.updateUser({
+          id: UpdatedId,
+          data: UpdatedData,
+        });
+
+        sendResponse(res, {
+          statusCode: StatusCodes.OK,
+          success: true,
+          data: result,
+          message: "User Info Updated Successfully",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  } else {
+    sendResponse(res, {
+      statusCode: StatusCodes.UNAUTHORIZED,
+      success: false,
+      data: null,
+      message: "UNAuthorized ",
+    });
+  }
+};
+
+// Update Singel User
+const changePassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id: UpdatedId } = req.query as { id: string };
+  const UpdatedData = req.body;
+  // User Tocken Data
+  const userData = req.headers.cookie;
+  const tocken = userData?.split("=")[1];
+  if (tocken) {
+    try {
+      const decoded = jwt.verify(tocken, config.JWT_SECRET_KEY as Secret) as {
+        id: string;
+      };
+      // Check Valid User
+      if (UpdatedId === decoded.id) {
+        // Update User
+        const result = await userService.changePassword({
+          id: UpdatedId,
+          data: UpdatedData,
+        });
+
+        sendResponse(res, {
+          statusCode: StatusCodes.OK,
+          success: true,
+          data: true,
+          message: "User Password Updated Successfully",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  } else {
+    sendResponse(res, {
+      statusCode: StatusCodes.UNAUTHORIZED,
+      success: false,
+      data: null,
+      message: "UNAuthorized ",
+    });
+  }
+};
+
 export const userController = {
   createUser,
   logIn,
   user,
+  updateUser,
+  changePassword,
 };
