@@ -8,4 +8,8 @@
 
 # Membership Management:
 
-⏳ Membership
+✅ Membership CURD
+
+# Meal Management:
+
+✅ Meal CURD
