@@ -7,6 +7,10 @@ const membershipSchema = new Schema<IMembership>(
       type: String,
       required: true,
     },
+    price: {
+      type: String,
+      required: true,
+    },
     plans: [
       {
         title: {

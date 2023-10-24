@@ -1,5 +1,5 @@
 import config from "../../config/config";
-import { IUser, IUserLogin } from "./user.interface";
+import { IMembershipStatus, IUser, IUserLogin } from "./user.interface";
 import { User } from "./user.model";
 import bcrypt from "bcrypt";
 import { jwtSign } from "../../../shared/jwt/jtwHandeler";
@@ -43,6 +43,12 @@ const createuser = async (
     userData.role = userData.role;
   } else {
     userData.role = ENUM_USER_ROLE.USER;
+  }
+
+  if (userData.membership) {
+    userData.membership = userData.membership;
+  } else {
+    userData.membership = null;
   }
 
   // Create User
@@ -105,13 +111,43 @@ const updateUser = async ({
   id,
   data,
 }: UpdateUser): Promise<Partial<IUser | null | Object>> => {
-  // Create User
+  // Update User
   const result = await User.findOneAndUpdate({ id }, data, {
     new: true,
   });
 
   if (result) {
     return data;
+  } else {
+    return null;
+  }
+};
+
+interface UpdateMembership {
+  id: string;
+  data: IMembershipStatus;
+}
+
+// update  Membershiip
+const updateMembership = async ({
+  id,
+  data,
+}: UpdateMembership): Promise<Partial<IUser | null | Object>> => {
+  // Create an object to specify the update
+
+  let update;
+  if (data) {
+    update = { membership: data };
+  } else {
+    update = { membership: null };
+  }
+  // Update User
+  const result = await User.findOneAndUpdate({ id: id }, update, {
+    new: true,
+  }).select("-password");
+
+  if (result) {
+    return result;
   } else {
     return null;
   }
@@ -160,4 +196,5 @@ export const userService = {
   user,
   updateUser,
   changePassword,
+  updateMembership,
 };

@@ -112,6 +112,26 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// Update Membership
+const addMembership = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.query as { id: string };
+  const data = req.body;
+
+  // Update User
+  const result = await userService.updateMembership({ id, data });
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    data: result,
+    message: "Membership Updated Successfully",
+  });
+};
+
 // Update Password
 const changePassword = async (
   req: Request,
@@ -162,4 +182,5 @@ export const userController = {
   user,
   updateUser,
   changePassword,
+  addMembership,
 };
