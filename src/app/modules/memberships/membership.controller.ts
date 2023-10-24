@@ -74,9 +74,27 @@ const deleteMembership = async (
     message: "Membership Updated Successfully",
   });
 };
+// GEt Singel membership
+const getSingelMembership = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.query as { id: string };
+
+  // Update User
+  const result = await membershipService.getSingelMembership(id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    data: result,
+    message: "Membership Data Retrived Successfully",
+  });
+};
 
 export const membershipController = {
   createmembership,
+  getSingelMembership,
   getAllMemberShips,
   updateMembership,
   deleteMembership,

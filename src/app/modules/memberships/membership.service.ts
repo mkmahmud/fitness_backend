@@ -21,11 +21,16 @@ interface UpdateUser {
   data: Partial<IMembership>;
 }
 
-// Get all memberships
+// Update memberships
 const updateMembership = async ({ id, data }: UpdateUser) => {
   const result = await Membership.findOneAndUpdate({ _id: id }, data, {
     new: true,
   });
+  return result;
+};
+// Get Singel Memberships
+const getSingelMembership = async (id: string) => {
+  const result = await Membership.findById({ _id: id });
   return result;
 };
 
@@ -41,6 +46,7 @@ const deleteMembership = async ({ id }: IID) => {
 
 export const membershipService = {
   createMembership,
+  getSingelMembership,
   getAllMemberships,
   updateMembership,
   deleteMembership,

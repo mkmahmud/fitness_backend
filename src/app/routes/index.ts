@@ -3,6 +3,8 @@ import { AuthRoutes } from "../modules/auth/auth.route";
 import { UserRoutes } from "../modules/user/user.route";
 import { MembershipRoutes } from "../modules/memberships/membership.route";
 import { MealRoutes } from "../modules/meal/meal.route";
+import { RoutineRoutes } from "../modules/routine/routine.route";
+import { AdmittedStudentRoutes } from "../modules/admittedstudents/admittedstudents.route";
 
 const routes = express.Router();
 
@@ -23,6 +25,14 @@ const Routers = [
   {
     path: "/meal",
     route: MealRoutes,
+  },
+  {
+    path: "/routine",
+    route: RoutineRoutes,
+  },
+  {
+    path: "/addmitted-student",
+    route: AdmittedStudentRoutes,
   },
 ];
 

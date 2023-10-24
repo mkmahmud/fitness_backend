@@ -28,5 +28,7 @@ router.delete(
   auth(ENUM_USER_ROLE.ADMIN),
   membershipController.deleteMembership
 );
+// Get Singel Membership
+router.get("/singel-membership", membershipController.getSingelMembership);
 
 export const MembershipRoutes = router;
