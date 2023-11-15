@@ -2,7 +2,6 @@ import { Model } from "mongoose";
 
 export interface IPlans {
   title: string;
-  index: number;
 }
 export interface IMembership {
   planName: string;

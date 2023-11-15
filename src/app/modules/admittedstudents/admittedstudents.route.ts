@@ -8,7 +8,7 @@ const router = express.Router();
 // Create AddmittedStudents
 router.post(
   "/",
-  auth(ENUM_USER_ROLE.TRAINER, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.TRAINER, ENUM_USER_ROLE.ADMIN),
   AdmittedStudentController.createAdmittesStudent
 );
 

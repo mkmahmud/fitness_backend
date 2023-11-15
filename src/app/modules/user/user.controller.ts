@@ -28,22 +28,26 @@ const logIn = async (req: Request, res: Response, next: NextFunction) => {
   const result = await userService.login(userData);
 
   if (result && "jwtTocken" in result) {
-    res.cookie("user", result.jwtTocken);
+    res.cookie("user", result.jwtTocken, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
   }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     data: result ? result : null,
-    message: result ? "User Logged In Successfully" : "Password Not Matched",
+    message: result ? "User Logged In Successfully" : "Something went wrong",
   });
 };
 
 // Get Singel User
 const user = async (req: Request, res: Response, next: NextFunction) => {
-  const userData = req.headers.cookie;
+  const tocken = req.headers.authorization;
   const { id: userID } = req.query as { id: string }; // Explicitly cast req.query
-  const tocken = userData?.split("=")[1];
+
   if (tocken) {
     try {
       const decoded = jwt.verify(tocken, config.JWT_SECRET_KEY as Secret) as {
@@ -71,45 +75,50 @@ const user = async (req: Request, res: Response, next: NextFunction) => {
     }
   }
 };
+// Get  User Details
+const getUserDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id: userID } = req.params;
+  const result = await userService.getUserDetails(userID);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    data: result,
+    message: "User Retrieved Successfully",
+  });
+};
+
+// Get Users
+const getUsers = async (req: Request, res: Response, next: NextFunction) => {
+  const { role } = req.params;
+  const result = await userService.getUsers(role);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    data: result,
+    message: "Users Retrieved Successfully",
+  });
+};
 
 // Update Singel User
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
-  const { id: UpdatedId } = req.query as { id: string };
+  const { id: UpdatedId } = req.params;
   const UpdatedData = req.body;
-  // User Tocken Data
-  const userData = req.headers.cookie;
-  const tocken = userData?.split("=")[1];
-  if (tocken) {
-    try {
-      const decoded = jwt.verify(tocken, config.JWT_SECRET_KEY as Secret) as {
-        id: string;
-      };
-      // Check Valid User
-      if (UpdatedId === decoded.id) {
-        // Update User
-        const result = await userService.updateUser({
-          id: UpdatedId,
-          data: UpdatedData,
-        });
+  // Update User
+  const result = await userService.updateUser({
+    id: UpdatedId,
+    data: UpdatedData,
+  });
 
-        sendResponse(res, {
-          statusCode: StatusCodes.OK,
-          success: true,
-          data: result,
-          message: "User Info Updated Successfully",
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  } else {
-    sendResponse(res, {
-      statusCode: StatusCodes.UNAUTHORIZED,
-      success: false,
-      data: null,
-      message: "UNAuthorized ",
-    });
-  }
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    data: result,
+    message: "User Info Updated Successfully",
+  });
 };
 
 // Update Membership
@@ -138,42 +147,20 @@ const changePassword = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id: UpdatedId } = req.query as { id: string };
+  const { id: UpdatedId } = req.params;
   const UpdatedData = req.body;
-  // User Tocken Data
-  const userData = req.headers.cookie;
-  const tocken = userData?.split("=")[1];
-  if (tocken) {
-    try {
-      const decoded = jwt.verify(tocken, config.JWT_SECRET_KEY as Secret) as {
-        id: string;
-      };
-      // Check Valid User
-      if (UpdatedId === decoded.id) {
-        // Update User
-        const result = await userService.changePassword({
-          id: UpdatedId,
-          data: UpdatedData,
-        });
+  // Update User Password
+  const result = await userService.changePassword({
+    id: UpdatedId,
+    data: UpdatedData,
+  });
 
-        sendResponse(res, {
-          statusCode: StatusCodes.OK,
-          success: true,
-          data: true,
-          message: "User Password Updated Successfully",
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  } else {
-    sendResponse(res, {
-      statusCode: StatusCodes.UNAUTHORIZED,
-      success: false,
-      data: null,
-      message: "UNAuthorized ",
-    });
-  }
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    data: true,
+    message: "User Password Updated Successfully",
+  });
 };
 
 export const userController = {
@@ -183,4 +170,6 @@ export const userController = {
   updateUser,
   changePassword,
   addMembership,
+  getUsers,
+  getUserDetails,
 };

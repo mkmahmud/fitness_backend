@@ -14,28 +14,21 @@ router.post(
 
 // Get user Meal
 router.get(
-  "/",
+  "/:id",
   auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.TRAINER, ENUM_USER_ROLE.ADMIN),
   Mealontroller.getUserMeal
 );
 
-// Get Singel Meal
-router.get(
-  "/singel-meal/",
-  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.TRAINER, ENUM_USER_ROLE.ADMIN),
-  Mealontroller.getSingelMeal
-);
-
 // Update Singel Meal
 router.patch(
-  "/",
+  "/:id",
   auth(ENUM_USER_ROLE.TRAINER, ENUM_USER_ROLE.ADMIN),
   Mealontroller.updateMeal
 );
 
 // Delete Singel Meal
 router.delete(
-  "/",
+  "/:id",
   auth(ENUM_USER_ROLE.TRAINER, ENUM_USER_ROLE.ADMIN),
   Mealontroller.deleteSingelMeal
 );

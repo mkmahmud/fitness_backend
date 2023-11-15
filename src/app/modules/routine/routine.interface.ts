@@ -10,8 +10,8 @@ export interface IRoutines {
 export interface IRoutine {
   routineName: string;
   duration: string;
-  routineFor: Types.ObjectId;
-  routineAdded: Types.ObjectId;
+  routineFor: string;
+  routineAdded: string;
   routines: IRoutines[];
 }
 

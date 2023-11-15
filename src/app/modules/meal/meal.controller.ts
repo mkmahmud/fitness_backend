@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import sendResponse from "../../../shared/sendResponse";
 import { StatusCodes } from "http-status-codes";
 import { MealService } from "./meal.service";
-import jwt, { Secret } from "jsonwebtoken";
-import config from "../../config/config";
 
 // Create Meal
 const createMeal = async (req: Request, res: Response, next: NextFunction) => {
@@ -14,13 +12,13 @@ const createMeal = async (req: Request, res: Response, next: NextFunction) => {
     statusCode: StatusCodes.OK,
     success: true,
     data: result,
-    message: "Meal Added  Successfully",
+    message: "Meal Created Successfully",
   });
 };
 
 // Get Singel User Meal
 const getUserMeal = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.query as { id: string };
+  const { id } = req.params;
   const result = await MealService.getUserMeal(id);
 
   sendResponse(res, {
@@ -31,26 +29,9 @@ const getUserMeal = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-// Get Singel  Meal
-const getSingelMeal = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { id } = req.query as { id: string };
-  const result = await MealService.getSingelMeal(id);
-
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    data: result,
-    message: "Meal Data Retrived Successfully",
-  });
-};
-
 // Update Meal
 const updateMeal = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.query as { id: string };
+  const { id } = req.params;
   const UpdatedData = req.body;
   const result = await MealService.updateMeal({
     id: id,
@@ -71,7 +52,7 @@ const deleteSingelMeal = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.query as { id: string };
+  const { id } = req.params;
   const result = await MealService.deleteSingelMeal(id);
 
   sendResponse(res, {
@@ -85,7 +66,6 @@ const deleteSingelMeal = async (
 export const Mealontroller = {
   createMeal,
   getUserMeal,
-  getSingelMeal,
   updateMeal,
   deleteSingelMeal,
 };

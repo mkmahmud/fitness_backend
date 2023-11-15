@@ -19,7 +19,20 @@ const createRoutine = async (
     message: "Routine Added  Successfully",
   });
 };
-// Create Routine
+// Get Routines
+const GetRoutines = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  const result = await RoutineService.getRoutines(id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    data: result,
+    message: "Routine Data Retrived  Successfully",
+  });
+};
+
+// Get Singel Routine
 const GetSingelRoutine = async (
   req: Request,
   res: Response,
@@ -39,4 +52,5 @@ const GetSingelRoutine = async (
 export const routineController = {
   createRoutine,
   GetSingelRoutine,
+  GetRoutines,
 };

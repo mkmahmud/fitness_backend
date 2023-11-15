@@ -21,7 +21,7 @@ const createmembership = async (
     message: "Membership created Successfully",
   });
 };
-// Create membership
+// Get All membership
 const getAllMemberShips = async (
   req: Request,
   res: Response,
@@ -43,7 +43,7 @@ const updateMembership = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id: UpdatedId } = req.query as { id: string };
+  const { id: UpdatedId } = req.params;
   const UpdatedData = req.body;
   const result = await membershipService.updateMembership({
     id: UpdatedId,
@@ -63,7 +63,7 @@ const deleteMembership = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.query as { id: string };
+  const { id } = req.params;
 
   // Update User
   const result = await membershipService.deleteMembership({ id });
@@ -80,7 +80,7 @@ const getSingelMembership = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.query as { id: string };
+  const { id } = req.params;
 
   // Update User
   const result = await membershipService.getSingelMembership(id);

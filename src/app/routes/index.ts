@@ -5,6 +5,9 @@ import { MembershipRoutes } from "../modules/memberships/membership.route";
 import { MealRoutes } from "../modules/meal/meal.route";
 import { RoutineRoutes } from "../modules/routine/routine.route";
 import { AdmittedStudentRoutes } from "../modules/admittedstudents/admittedstudents.route";
+import { AvailableRoutes } from "../modules/availability/available.route";
+import { ContactRoutes } from "../modules/contact/contact.route";
+import { UserMembershipRoutes } from "../modules/userMembership/userMembership.route";
 
 const routes = express.Router();
 
@@ -23,6 +26,10 @@ const Routers = [
     route: MembershipRoutes,
   },
   {
+    path: "/user-membership",
+    route: UserMembershipRoutes,
+  },
+  {
     path: "/meal",
     route: MealRoutes,
   },
@@ -33,6 +40,14 @@ const Routers = [
   {
     path: "/addmitted-student",
     route: AdmittedStudentRoutes,
+  },
+  {
+    path: "/available-time",
+    route: AvailableRoutes,
+  },
+  {
+    path: "/contact",
+    route: ContactRoutes,
   },
 ];
 

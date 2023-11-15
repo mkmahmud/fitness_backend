@@ -17,11 +17,20 @@ export interface IUser {
   fullName: string;
   email: string;
   password: string;
-  gender?: IGender;
   id: string;
-  role?: "user" | "trainer" | "admin" | "superAdmin";
-  phoneNumber?: string;
-  membership?: IMembershipStatus | null;
+  role: "user" | "trainer" | "admin" | "superAdmin";
 }
 
 export type UserModel = Model<IUser, Record<string, unknown>>;
+
+export interface IuserDetails {
+  id: string;
+  profilePhoto?: string;
+  phoneNumber?: string;
+  gender?: IGender;
+  dateOfBirth?: string;
+  presentAddress?: string;
+  parmanentAddress?: string;
+}
+
+export type UserDetailsModel = Model<IuserDetails, Record<string, unknown>>;

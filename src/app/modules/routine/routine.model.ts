@@ -35,13 +35,11 @@ const routineSchema = new Schema<IRoutine>(
       required: true,
     },
     routineFor: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
+      type: String,
       required: true,
     },
     routineAdded: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
+      type: String,
       required: true,
     },
   },

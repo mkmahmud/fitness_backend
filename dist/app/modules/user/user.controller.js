@@ -65,24 +65,24 @@ const logIn = (req, res, next) =>
     const userData = req.body;
     const result = yield user_service_1.userService.login(userData);
     if (result && "jwtTocken" in result) {
-      res.cookie("user", result.jwtTocken);
+      res.cookie("user", result.jwtTocken, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
     }
     (0, sendResponse_1.default)(res, {
       statusCode: http_status_codes_1.StatusCodes.OK,
       success: true,
       data: result ? result : null,
-      message: result ? "User Logged In Successfully" : "Password Not Matched",
+      message: result ? "User Logged In Successfully" : "Something went wrong",
     });
   });
 // Get Singel User
 const user = (req, res, next) =>
   __awaiter(void 0, void 0, void 0, function* () {
-    const userData = req.headers.cookie;
+    const tocken = req.headers.authorization;
     const { id: userID } = req.query; // Explicitly cast req.query
-    const tocken =
-      userData === null || userData === void 0
-        ? void 0
-        : userData.split("=")[1];
     if (tocken) {
       try {
         const decoded = jsonwebtoken_1.default.verify(
@@ -101,15 +101,100 @@ const user = (req, res, next) =>
             message: "User Retrieved Successfully",
           });
         } else {
-          console.log("ID doesn't Matched");
+          (0, sendResponse_1.default)(res, {
+            statusCode: http_status_codes_1.StatusCodes.UNAUTHORIZED,
+            success: false,
+            data: null,
+            message: "Unauthorized",
+          });
         }
       } catch (err) {
         console.log(err);
       }
     }
   });
+// Get  User Details
+const getUserDetails = (req, res, next) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const { id: userID } = req.params;
+    const result = yield user_service_1.userService.getUserDetails(userID);
+    (0, sendResponse_1.default)(res, {
+      statusCode: http_status_codes_1.StatusCodes.OK,
+      success: true,
+      data: result,
+      message: "User Retrieved Successfully",
+    });
+  });
+// Get Users
+const getUsers = (req, res, next) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const { role } = req.params;
+    const result = yield user_service_1.userService.getUsers(role);
+    (0, sendResponse_1.default)(res, {
+      statusCode: http_status_codes_1.StatusCodes.OK,
+      success: true,
+      data: result,
+      message: "Users Retrieved Successfully",
+    });
+  });
+// Update Singel User
+const updateUser = (req, res, next) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const { id: UpdatedId } = req.params;
+    const UpdatedData = req.body;
+    // Update User
+    const result = yield user_service_1.userService.updateUser({
+      id: UpdatedId,
+      data: UpdatedData,
+    });
+    (0, sendResponse_1.default)(res, {
+      statusCode: http_status_codes_1.StatusCodes.OK,
+      success: true,
+      data: result,
+      message: "User Info Updated Successfully",
+    });
+  });
+// Update Membership
+const addMembership = (req, res, next) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.query;
+    const data = req.body;
+    // Update User
+    const result = yield user_service_1.userService.updateMembership({
+      id,
+      data,
+    });
+    (0, sendResponse_1.default)(res, {
+      statusCode: http_status_codes_1.StatusCodes.OK,
+      success: true,
+      data: result,
+      message: "Membership Updated Successfully",
+    });
+  });
+// Update Password
+const changePassword = (req, res, next) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const { id: UpdatedId } = req.params;
+    const UpdatedData = req.body;
+    // Update User Password
+    const result = yield user_service_1.userService.changePassword({
+      id: UpdatedId,
+      data: UpdatedData,
+    });
+    (0, sendResponse_1.default)(res, {
+      statusCode: http_status_codes_1.StatusCodes.OK,
+      success: true,
+      data: true,
+      message: "User Password Updated Successfully",
+    });
+  });
 exports.userController = {
   createUser,
   logIn,
   user,
+  updateUser,
+  changePassword,
+  addMembership,
+  getUsers,
+  getUserDetails,
 };

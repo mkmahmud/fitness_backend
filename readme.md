@@ -13,3 +13,15 @@
 # Meal Management:
 
 ✅ Meal CURD
+
+# Routine Management:
+
+✅ Meal CURD
+
+# Trainner Management:
+
+✅ Meal CURD
+
+<!-- Live Link -->
+
+https://fitness-backend-two.vercel.app/

@@ -8,7 +8,14 @@ const createRoutine = async (
   const result = await Routine.create(data);
   return result;
 };
-// Create Routine
+// Get   Routine
+const getRoutines = async (
+  id: string
+): Promise<Partial<IRoutine | null | Object>> => {
+  const result = await Routine.find({ routineFor: id });
+  return result;
+};
+// Get Singel Routine
 const getSingelRoutine = async (
   id: string
 ): Promise<Partial<IRoutine | null | Object>> => {
@@ -18,5 +25,6 @@ const getSingelRoutine = async (
 
 export const RoutineService = {
   createRoutine,
+  getRoutines,
   getSingelRoutine,
 };

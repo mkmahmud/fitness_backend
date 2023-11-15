@@ -7,13 +7,11 @@ import {
 const AdmittedStudentSchema = new Schema<IAdmittedStudents>(
   {
     trainer: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
+      type: String,
       required: true,
     },
     student: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
+      type: String,
       required: true,
     },
   },

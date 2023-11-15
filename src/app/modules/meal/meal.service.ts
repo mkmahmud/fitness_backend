@@ -1,35 +1,30 @@
-import { IMeal } from "./meal.interface";
+import { MealPlan } from "./meal.interface";
 import { Meal } from "./meal.model";
 
-// Create a new user
+// Create a new Meal for user
 const createmeal = async (
-  mealData: Partial<IMeal>
-): Promise<Partial<IMeal | null | Object>> => {
+  mealData: Partial<MealPlan>
+): Promise<Partial<MealPlan | null | Object>> => {
   const result = await Meal.create(mealData);
   return result;
 };
 
 // Get A Singel User Meal
-const getUserMeal = async (id: string): Promise<IMeal | null | Object> => {
-  const result = await Meal.find({ mealFor: id }).populate("mealFor");
-  return result;
-};
-// Get A Singel  Meal
-const getSingelMeal = async (id: string): Promise<IMeal | null | Object> => {
-  const result = await Meal.findById(id).populate("mealFor");
+const getUserMeal = async (id: string): Promise<MealPlan | null | Object> => {
+  const result = await Meal.find({ mealFor: id });
   return result;
 };
 
 interface UpdateMeal {
   id: string;
-  data: Partial<IMeal>;
+  data: Partial<MealPlan>;
 }
 
 // Update meal By Trainer and admin
 const updateMeal = async ({
   id,
   data,
-}: UpdateMeal): Promise<Partial<IMeal | null | Object>> => {
+}: UpdateMeal): Promise<Partial<MealPlan | null | Object>> => {
   // Update Meal
   const result = await Meal.findOneAndUpdate({ _id: id }, data, {
     new: true,
@@ -43,7 +38,9 @@ const updateMeal = async ({
 };
 
 // Delete A Singel  Meal
-const deleteSingelMeal = async (id: string): Promise<IMeal | null | Object> => {
+const deleteSingelMeal = async (
+  id: string
+): Promise<MealPlan | null | Object> => {
   const result = await Meal.findByIdAndDelete(id);
   return result;
 };
@@ -51,7 +48,6 @@ const deleteSingelMeal = async (id: string): Promise<IMeal | null | Object> => {
 export const MealService = {
   createmeal,
   getUserMeal,
-  getSingelMeal,
   updateMeal,
   deleteSingelMeal,
 };

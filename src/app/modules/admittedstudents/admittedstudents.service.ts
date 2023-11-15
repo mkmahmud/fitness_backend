@@ -11,9 +11,7 @@ const createNewStudent = async (
 
 // Get All Students for Trainner
 const getAllStudents = async (id: string): Promise<Object | null> => {
-  const result = await AdmittedStudent.find({ trainer: id })
-    .populate({ path: "trainer", select: "-password" })
-    .populate({ path: "student", select: "-password" });
+  const result = await AdmittedStudent.find({ trainer: id });
   return result;
 };
 

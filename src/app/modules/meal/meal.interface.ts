@@ -1,21 +1,24 @@
-import { Model, ObjectId, Types } from "mongoose";
-import { IUser } from "../user/user.interface";
+import { Model } from "mongoose";
 
-export type Meals = {
+export type Meal = {
   title: string;
-  index: number;
+  Index: number;
 };
-export interface IMeal {
+
+export interface MealData {
   mealName: string;
-  mealTime: string;
-  mealId: string;
-  isAfter: boolean;
-  preMeals: Meals[];
-  postMeals: Meals[];
-  afterWorkout: Meals[];
-  note: string;
-  mealFor: Types.ObjectId | IUser;
-  addedMeal: Types.ObjectId | IUser;
+  time: string;
+  meals: Meal[];
+  afterMeal: Meal[];
 }
 
-export type MealModel = Model<IMeal, Record<string, unknown>>;
+export interface MealPlan {
+  mealFor: string;
+  meladded: string;
+  mealTitle: string;
+  mealDuration: string;
+  mealData: MealData[];
+  note: string;
+}
+
+export type MealPlanModel = Model<MealPlan, Record<string, unknown>>;

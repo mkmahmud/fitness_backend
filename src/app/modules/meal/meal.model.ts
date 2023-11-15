@@ -1,66 +1,10 @@
-import { Schema, Types, model } from "mongoose";
-import { IMeal, MealModel, Meals } from "./meal.interface";
+import { Schema, model } from "mongoose";
+import { MealPlan, MealPlanModel } from "./meal.interface";
 
-const mealchema = new Schema<IMeal>(
+const mealSchema = new Schema<MealPlan>(
   {
-    mealName: {
+    mealTitle: {
       type: String,
-      required: true,
-    },
-    mealTime: {
-      type: String,
-      required: true,
-    },
-    mealId: {
-      type: String,
-      required: true,
-    },
-    isAfter: {
-      type: Boolean,
-      required: true,
-    },
-    preMeals: {
-      type: [
-        {
-          title: {
-            type: String,
-            required: true,
-          },
-          index: {
-            type: Number, // Corrected to specify a number type
-            required: true,
-          },
-        },
-      ],
-      required: true,
-    },
-    postMeals: {
-      type: [
-        {
-          title: {
-            type: String,
-            required: true,
-          },
-          index: {
-            type: Number, // Corrected to specify a number type
-            required: true,
-          },
-        },
-      ],
-      required: true,
-    },
-    afterWorkout: {
-      type: [
-        {
-          title: {
-            type: String,
-            required: true,
-          },
-          index: {
-            title: { type: Number, required: true },
-          },
-        },
-      ],
       required: true,
     },
     note: {
@@ -68,13 +12,50 @@ const mealchema = new Schema<IMeal>(
       required: true,
     },
     mealFor: {
-      type: Types.ObjectId,
-      reference: "user",
+      type: String,
       required: true,
     },
-    addedMeal: {
-      type: Types.ObjectId,
-      reference: "user",
+    meladded: {
+      type: String,
+      required: true,
+    },
+    mealDuration: {
+      type: String,
+      required: true,
+    },
+    mealData: {
+      type: [
+        {
+          mealName: {
+            type: String,
+            required: true,
+          },
+          time: {
+            type: String,
+            required: true,
+          },
+          meals: [
+            {
+              title: {
+                type: String,
+              },
+              index: {
+                type: Number,
+              },
+            },
+          ],
+          afterMeal: [
+            {
+              title: {
+                type: String,
+              },
+              index: {
+                type: Number,
+              },
+            },
+          ],
+        },
+      ],
       required: true,
     },
   },
@@ -83,4 +64,4 @@ const mealchema = new Schema<IMeal>(
   }
 );
 
-export const Meal = model<IMeal, MealModel>("meal", mealchema);
+export const Meal = model<MealPlan, MealPlanModel>("meal", mealSchema);

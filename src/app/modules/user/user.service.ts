@@ -1,6 +1,11 @@
 import config from "../../config/config";
-import { IMembershipStatus, IUser, IUserLogin } from "./user.interface";
-import { User } from "./user.model";
+import {
+  IMembershipStatus,
+  IUser,
+  IUserLogin,
+  IuserDetails,
+} from "./user.interface";
+import { User, UserDetails } from "./user.model";
 import bcrypt from "bcrypt";
 import { jwtSign } from "../../../shared/jwt/jtwHandeler";
 import {
@@ -29,15 +34,6 @@ const createuser = async (
     return null;
   }
 
-  // Set User ID
-  if (userData.role === ENUM_USER_ROLE.TRAINER) {
-    userData.id = await generateTrainerId();
-  } else if (userData.role === ENUM_USER_ROLE.ADMIN) {
-    userData.id = await generateAdminId();
-  } else if (userData.role === ENUM_USER_ROLE.USER) {
-    userData.id = await generateMemberId();
-  }
-
   // Set Role
   if (userData.role) {
     userData.role = userData.role;
@@ -45,10 +41,13 @@ const createuser = async (
     userData.role = ENUM_USER_ROLE.USER;
   }
 
-  if (userData.membership) {
-    userData.membership = userData.membership;
-  } else {
-    userData.membership = null;
+  // Set User ID
+  if (userData.role === ENUM_USER_ROLE.TRAINER) {
+    userData.id = await generateTrainerId();
+  } else if (userData.role === ENUM_USER_ROLE.ADMIN) {
+    userData.id = await generateAdminId();
+  } else if (userData.role === ENUM_USER_ROLE.USER) {
+    userData.id = await generateMemberId();
   }
 
   // Create User
@@ -101,28 +100,48 @@ const user = async (id: string): Promise<IUser | null | object> => {
   return null;
 };
 
+// Get  Users from DB
+const getUsers = async (role: string): Promise<IUser | null | object> => {
+  const user = await User.find({ role: role }).select("-password");
+  if (user) {
+    return { user };
+  }
+
+  return null;
+};
+
 interface UpdateUser {
   id: string;
-  data: Partial<IUser>;
+  data: Partial<IuserDetails>;
 }
 
-// update   a new user
+// update       user Details
 const updateUser = async ({
   id,
   data,
-}: UpdateUser): Promise<Partial<IUser | null | Object>> => {
-  // Update User
-  const result = await User.findOneAndUpdate({ id }, data, {
-    new: true,
-  });
-
-  if (result) {
-    return data;
+}: UpdateUser): Promise<Partial<IuserDetails | null | Object>> => {
+  const isExistUserDetails = await UserDetails.findOne({ id });
+  if (isExistUserDetails) {
+    // Update User
+    const result = await UserDetails.findOneAndUpdate({ id }, data, {
+      new: true,
+    });
+    return result;
   } else {
-    return null;
+    const result = await UserDetails.create(data);
+    return result;
   }
 };
+// Get user Details
 
+const getUserDetails = async (id: string): Promise<IUser | null | object> => {
+  const user = await UserDetails.findOne({ id });
+  if (user) {
+    return { user };
+  }
+
+  return null;
+};
 interface UpdateMembership {
   id: string;
   data: IMembershipStatus;
@@ -156,7 +175,9 @@ const updateMembership = async ({
 // Change Password
 
 type password = {
-  password: string;
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 };
 
 interface UpdatePassword {
@@ -168,23 +189,29 @@ const changePassword = async ({
   id,
   data,
 }: UpdatePassword): Promise<Partial<IUser | null | Object>> => {
-  // Hash password
-  if (typeof data.password === "string") {
-    data.password = await bcrypt.hash(
-      data.password,
-      Number(config.bcrypt_salt_round)
+  // Check Previous Password
+  const user = await User.findOne({ id: id });
+  if (user && typeof data.currentPassword === "string" && user.password) {
+    const checkPassword = await bcrypt.compare(
+      data.currentPassword,
+      user.password
     );
-  } else {
-    throw new Error("Invalid password");
-  }
+    if (checkPassword) {
+      const newHashedPassword = await bcrypt.hash(
+        data.confirmNewPassword,
+        Number(config.bcrypt_salt_round)
+      );
 
-  // Create User
-  const result = await User.findOneAndUpdate({ id }, data, {
-    new: true,
-  });
+      // Create User
+      const result = await User.findOneAndUpdate(
+        { id },
+        { password: newHashedPassword }
+      );
 
-  if (result) {
-    return data;
+      return result;
+    } else {
+      return null;
+    }
   } else {
     return null;
   }
@@ -197,4 +224,6 @@ export const userService = {
   updateUser,
   changePassword,
   updateMembership,
+  getUsers,
+  getUserDetails,
 };

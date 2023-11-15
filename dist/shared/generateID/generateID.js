@@ -33,12 +33,38 @@ var __awaiter =
     });
   };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateMemberId = void 0;
+exports.generateAdminId =
+  exports.generateTrainerId =
+  exports.generateMemberId =
+    void 0;
 const user_model_1 = require("../../app/modules/user/user.model");
+const user_1 = require("../../enums/user");
+// Member Id
 const generateMemberId = () =>
   __awaiter(void 0, void 0, void 0, function* () {
-    const totalUser = yield user_model_1.User.find();
+    const totalUser = yield user_model_1.User.find({
+      role: user_1.ENUM_USER_ROLE.USER,
+    });
     let memberId = totalUser ? `M-000${totalUser.length + 1}` : "M-00001";
     return memberId;
   });
 exports.generateMemberId = generateMemberId;
+// Trainer Id
+const generateTrainerId = () =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const totalUser = yield user_model_1.User.find({
+      role: user_1.ENUM_USER_ROLE.TRAINER,
+    });
+    let trainerId = totalUser ? `T-000${totalUser.length + 1}` : "T-00001";
+    return trainerId;
+  });
+exports.generateTrainerId = generateTrainerId;
+const generateAdminId = () =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const totalUser = yield user_model_1.User.find({
+      role: user_1.ENUM_USER_ROLE.ADMIN,
+    });
+    let adminId = totalUser ? `A-000${totalUser.length + 1}` : "A-00001";
+    return adminId;
+  });
+exports.generateAdminId = generateAdminId;

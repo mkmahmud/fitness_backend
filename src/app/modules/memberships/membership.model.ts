@@ -17,10 +17,6 @@ const membershipSchema = new Schema<IMembership>(
           type: String,
           required: true,
         },
-        index: {
-          type: Number,
-          required: true,
-        },
       },
     ],
   },

@@ -1,8 +1,8 @@
 import { Model, Types } from "mongoose";
 
 export interface IAdmittedStudents {
-  trainer: Types.ObjectId;
-  student: Types.ObjectId;
+  trainer: string;
+  student: string;
 }
 
 export type AdmittedStudentModel = Model<

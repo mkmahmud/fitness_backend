@@ -44,6 +44,7 @@ const user_model_1 = require("./user.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jtwHandeler_1 = require("../../../shared/jwt/jtwHandeler");
 const generateID_1 = require("../../../shared/generateID/generateID");
+const user_1 = require("../../../enums/user");
 // Create a new user
 const createuser = (userData) =>
   __awaiter(void 0, void 0, void 0, function* () {
@@ -55,13 +56,28 @@ const createuser = (userData) =>
     } else {
       throw new Error("Invalid password");
     }
+    // Check Duplicate Email Address
+    const isEsistEmail = yield user_model_1.User.find({
+      email: userData.email,
+    });
+    if (isEsistEmail.length > 0) {
+      return null;
+    }
+    // Set Role
     if (userData.role) {
       userData.role = userData.role;
     } else {
-      const memberID = yield (0, generateID_1.generateMemberId)();
-      userData.role = "user";
-      userData.id = memberID;
+      userData.role = user_1.ENUM_USER_ROLE.USER;
     }
+    // Set User ID
+    if (userData.role === user_1.ENUM_USER_ROLE.TRAINER) {
+      userData.id = yield (0, generateID_1.generateTrainerId)();
+    } else if (userData.role === user_1.ENUM_USER_ROLE.ADMIN) {
+      userData.id = yield (0, generateID_1.generateAdminId)();
+    } else if (userData.role === user_1.ENUM_USER_ROLE.USER) {
+      userData.id = yield (0, generateID_1.generateMemberId)();
+    }
+    // Create User
     const result = yield user_model_1.User.create(userData);
     if (result) {
       const jwtTocken = (0, jtwHandeler_1.jwtSign)({
@@ -105,8 +121,103 @@ const user = (id) =>
     }
     return null;
   });
+// Get  Users from DB
+const getUsers = (role) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.find({ role: role }).select(
+      "-password",
+    );
+    if (user) {
+      return { user };
+    }
+    return null;
+  });
+// update       user Details
+const updateUser = ({ id, data }) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const isExistUserDetails = yield user_model_1.UserDetails.findOne({ id });
+    if (isExistUserDetails) {
+      // Update User
+      const result = yield user_model_1.UserDetails.findOneAndUpdate(
+        { id },
+        data,
+        {
+          new: true,
+        },
+      );
+      return result;
+    } else {
+      const result = yield user_model_1.UserDetails.create(data);
+      return result;
+    }
+  });
+// Get user Details
+const getUserDetails = (id) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.UserDetails.findOne({ id });
+    if (user) {
+      return { user };
+    }
+    return null;
+  });
+// update  Membershiip
+const updateMembership = ({ id, data }) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    // Create an object to specify the update
+    let update;
+    if (data) {
+      update = { membership: data };
+    } else {
+      update = { membership: null };
+    }
+    // Update User
+    const result = yield user_model_1.User.findOneAndUpdate(
+      { id: id },
+      update,
+      {
+        new: true,
+      },
+    ).select("-password");
+    if (result) {
+      return result;
+    } else {
+      return null;
+    }
+  });
+const changePassword = ({ id, data }) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    // Check Previous Password
+    const user = yield user_model_1.User.findOne({ id: id });
+    if (user && typeof data.currentPassword === "string" && user.password) {
+      const checkPassword = yield bcrypt_1.default.compare(
+        data.currentPassword,
+        user.password,
+      );
+      if (checkPassword) {
+        const newHashedPassword = yield bcrypt_1.default.hash(
+          data.confirmNewPassword,
+          Number(config_1.default.bcrypt_salt_round),
+        );
+        // Create User
+        const result = yield user_model_1.User.findOneAndUpdate(
+          { id },
+          { password: newHashedPassword },
+        );
+        return result;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  });
 exports.userService = {
   createuser,
   login,
   user,
+  updateUser,
+  changePassword,
+  updateMembership,
+  getUsers,
+  getUserDetails,
 };

@@ -13,6 +13,12 @@ router.post(
 );
 // Get Singel Routine
 router.get(
+  "/member/:id",
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.TRAINER, ENUM_USER_ROLE.ADMIN),
+  routineController.GetRoutines
+);
+// Get Singel Routine
+router.get(
   "/:id",
   auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.TRAINER, ENUM_USER_ROLE.ADMIN),
   routineController.GetSingelRoutine

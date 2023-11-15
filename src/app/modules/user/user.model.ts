@@ -1,5 +1,10 @@
 import { Schema, Types, model } from "mongoose";
-import { IUser, UserModel } from "./user.interface";
+import {
+  IUser,
+  IuserDetails,
+  UserDetailsModel,
+  UserModel,
+} from "./user.interface";
 
 const userSchema = new Schema<IUser>({
   fullName: {
@@ -21,25 +26,40 @@ const userSchema = new Schema<IUser>({
   role: {
     type: String,
     enum: ["admin", "trainer", "user", "superAdmin"],
-  },
-  gender: {
-    type: String,
-    enum: ["male", "female", "other"],
-  },
-  phoneNumber: {
-    type: String,
-  },
-  membership: {
-    planID: {
-      type: Types.ObjectId,
-    },
-    startDate: {
-      type: String,
-    },
-    endDate: {
-      type: String,
-    },
+    required: true,
   },
 });
 
 export const User = model<IUser, UserModel>("user", userSchema);
+
+// User Details
+const UserDetilsSchema = new Schema<IuserDetails>({
+  id: {
+    type: String,
+    required: true,
+  },
+  profilePhoto: {
+    type: String,
+  },
+  phoneNumber: {
+    type: String,
+  },
+  gender: {
+    type: String,
+    enum: ["male", "female", "others"],
+  },
+  dateOfBirth: {
+    type: String,
+  },
+  presentAddress: {
+    type: String,
+  },
+  parmanentAddress: {
+    type: String,
+  },
+});
+
+export const UserDetails = model<IuserDetails, UserDetailsModel>(
+  "userDetails",
+  UserDetilsSchema
+);

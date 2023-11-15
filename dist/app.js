@@ -9,9 +9,14 @@ const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const index_1 = __importDefault(require("./app/routes/index"));
+const routes_1 = __importDefault(require("./app/routes"));
 // Cors
-app.use((0, cors_1.default)());
+const corsOptions = {
+  origin: "https://fitnessone.netlify.app",
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+app.use((0, cors_1.default)(corsOptions));
 app.use((0, cookie_parser_1.default)());
 // Parser
 app.use(express_1.default.json());
@@ -20,5 +25,5 @@ app.get("/", (req, res) => {
   res.send("Server is runing");
 });
 // User Router
-app.use("/api/v1", index_1.default);
+app.use("/api/v1", routes_1.default);
 exports.default = app;
